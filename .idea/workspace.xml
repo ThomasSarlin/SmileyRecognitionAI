@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="dd05f9ff-b4af-4af0-bcc7-7576dfaf588c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ASCIIreader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/SmileyRecognizer.java" />
-    </list>
+    <list default="true" id="dd05f9ff-b4af-4af0-bcc7-7576dfaf588c" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
