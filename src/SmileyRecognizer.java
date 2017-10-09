@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 public class SmileyRecognizer {
     private ASCIIreader asciiReader;
-    private Perceptron[] perceptrons;
+    private ArrayList<Perceptron> perceptrons;
     public static Function<ArrayList<Image>,ArrayList<Image>> imageListShuffle = a-> {
         Collections.shuffle(a);
         return a;
@@ -14,7 +14,16 @@ public class SmileyRecognizer {
         initializeImages(imageFile,answerFile);
         initializeWeights();
     }
-    
+    public static Function<Double,Double> activationFunction = e->Math.tanh(e);
+
+    public double sumWWeights(int index, Image image){
+        double sum = 0;
+        for(int i= 0; i<402 ; i++){
+              sum+=perceptrons.get(i).getWeight(index)*image.getImage()[i];
+        }
+        return sum;
+    }
+
     public void run(){
 
     }
@@ -23,7 +32,12 @@ public class SmileyRecognizer {
         asciiReader=new ASCIIreader(imageFile,answerFile);
     }
 
-    public void initializeWeights(){}
+    public void initializeWeights(){
+        for(int i=0 ; i<402 ; i++){
+            perceptrons.add(new Perceptron());
+        }
+
+    }
 
     public static void main(String args[]){
 

@@ -11,6 +11,7 @@ public class Perceptron {
     }
 
     public double getWeight(int index){return this.weights[index];}
+
     double randomValue;
     double rangeMin=0.3;
     double rangeMax=0.5;
