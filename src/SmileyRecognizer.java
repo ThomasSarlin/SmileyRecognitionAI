@@ -15,6 +15,10 @@ public class SmileyRecognizer {
         initializeWeights();
     }
 
+    /**
+     * hej
+     * 
+     */
     public void run(){
 
     }
