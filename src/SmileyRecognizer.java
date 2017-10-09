@@ -6,10 +6,7 @@ import java.util.function.Function;
 public class SmileyRecognizer {
     private ASCIIreader asciiReader;
     private ArrayList<Perceptron> perceptrons;
-    public static Function<ArrayList<Image>,ArrayList<Image>> imageListShuffle = a-> {
-        Collections.shuffle(a);
-        return a;
-    };
+    
     public SmileyRecognizer(File imageFile,File answerFile,File testFile){
         initializeImages(imageFile,answerFile);
         initializeWeights();
