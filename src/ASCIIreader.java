@@ -24,12 +24,13 @@ public class ASCIIreader {
         BufferedReader answerReader = new BufferedReader(new FileReader(answerFile));
         String line = imageReader.readLine();
         String name;
-        int imageArray[] = new int[402];
-        int imageIndex=0;
+        int imageArray[];
+        int imageIndex;
         String split[];
-        
+
         while(line!=null) {
-            if(line.charAt(0)!=('#')&&line.charAt(0)!=' ') {
+            if(line.length()>0&&(line.charAt(0)!=('#'))){
+                 imageArray = new int[402];
                 split=line.split("\\s+");
                 imageIndex=0;
                 name=split[0];
@@ -55,7 +56,7 @@ public class ASCIIreader {
 
         imageIndex=0;
         while(line!=null){
-            if(line.charAt(0)!=('#')&&line.charAt(0)!=' ') {
+            if(line.length()>0&&line.charAt(0)!=('#')) {
                 split=line.split("\\s+");
                 if(images.get(imageIndex).equals(split[0]))
                     images.get(imageIndex).correctEmotion=Integer.parseInt(split[1]);
@@ -64,8 +65,10 @@ public class ASCIIreader {
                 }
                 imageIndex++;
             }
+            line=answerReader.readLine();
         }
 
+        splitImages();
     }
     private void forceChangeEmotion(String name, int value){
         images.forEach(e->{
