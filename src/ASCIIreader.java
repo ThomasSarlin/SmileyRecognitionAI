@@ -10,6 +10,9 @@ public class ASCIIreader {
 
     public ASCIIreader(File ImageFile,File answerFile,double fileRatio) throws IOException {
         this.fileRatio=fileRatio;
+        this.images=new ArrayList<>();
+        this.trainingImages=new ArrayList<>();
+        this.performanceImages = new ArrayList<>();
         asciiToImage(ImageFile,answerFile);
     }
 
@@ -24,6 +27,7 @@ public class ASCIIreader {
         int imageArray[] = new int[402];
         int imageIndex=0;
         String split[];
+        
         while(line!=null) {
             if(line.charAt(0)!=('#')&&line.charAt(0)!=' ') {
                 split=line.split("\\s+");
@@ -47,6 +51,27 @@ public class ASCIIreader {
             line=imageReader.readLine();
         }
 
+        line= answerReader.readLine();
+
+        imageIndex=0;
+        while(line!=null){
+            if(line.charAt(0)!=('#')&&line.charAt(0)!=' ') {
+                split=line.split("\\s+");
+                if(images.get(imageIndex).equals(split[0]))
+                    images.get(imageIndex).correctEmotion=Integer.parseInt(split[1]);
+                else {
+                    forceChangeEmotion(split[0],Integer.parseInt(split[1]));
+                }
+                imageIndex++;
+            }
+        }
+
+    }
+    private void forceChangeEmotion(String name, int value){
+        images.forEach(e->{
+            if(e.name.equals(name))
+                e.correctEmotion=value;
+        });
     }
     private void splitImages(){
         images.forEach(e->{
