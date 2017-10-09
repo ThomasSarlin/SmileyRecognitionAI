@@ -14,11 +14,7 @@ public class SmileyRecognizer {
         initializeImages(imageFile,answerFile);
         initializeWeights();
     }
-
-    /**
-     * hej
-     * 
-     */
+    
     public void run(){
 
     }
