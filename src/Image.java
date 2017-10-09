@@ -3,10 +3,12 @@ import java.util.Collections;
 import java.util.function.Function;
 
 public class Image {
+    String name;
     int image[];
     int correctEmotion;
 
-    public Image(int imageArray[], int correctEmotion){
+    public Image(String name,int imageArray[], int correctEmotion){
+        this.name=name;
         this.image=imageArray;
         this.correctEmotion=correctEmotion;
     }
