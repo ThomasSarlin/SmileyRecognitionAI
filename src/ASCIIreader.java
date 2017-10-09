@@ -22,20 +22,28 @@ public class ASCIIreader {
         String line = imageReader.readLine();
         String name;
         int imageArray[] = new int[402];
-        int index=0;
+        int imageIndex=0;
         String split[];
         while(line!=null) {
-            if(line.charAt(0)!=('#')||line.charAt(0)!=' ') {
+            if(line.charAt(0)!=('#')&&line.charAt(0)!=' ') {
                 split=line.split("\\s+");
-                if(split.length==1){
-                    name=split[0];
-                }
+                imageIndex=0;
+                name=split[0];
+
+                line=imageReader.readLine();
+                split=line.split("\\s+");
                 while(split.length==20){
-                    
+                    for(int i=0;i<split.length;i++) {
+                        imageArray[imageIndex] = Integer.parseInt(split[i]);
+                        imageIndex++;
+                    }
+                    line=imageReader.readLine();
+                    split=line.split("\\s+");
+                    if(split.length<20)
+                        images.add(new Image(name,imageArray,0));
+
                 }
             }
-
-
             line=imageReader.readLine();
         }
 
