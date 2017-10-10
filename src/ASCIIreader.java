@@ -4,7 +4,7 @@
  * corresponding emotion of these images. It is also possible to shuffle the
  * elements on the list and the list is also split into two to be able to have
  * one set of images for training and another set for performance test.
- * 
+ *
  * @Version 1.0
  * @author Thomas Sarlin, Petter Poucette
  */
@@ -13,6 +13,7 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 public class ASCIIreader {
     private ArrayList<Image> images;
@@ -30,6 +31,7 @@ public class ASCIIreader {
      */
     public ASCIIreader(File ImageFile,File answerFile,double fileRatio) throws IOException {
         this.fileRatio=fileRatio;
+        this.images=new ArrayList<>();
         this.trainingImages=new ArrayList<>();
         this.performanceImages = new ArrayList<>();
         asciiToImage(ImageFile,answerFile);
@@ -64,7 +66,10 @@ public class ASCIIreader {
     /**
      * Method that scrambles images, used before each training round.
      */
-    public void shuffleImages(){ Collections.shuffle(images);splitImages();}
+    public void shuffleImages(){
+        Collections.shuffle(images);
+        splitImages();
+    }
 
     /**
      * Converts ASCII-files to Image-arrays and connects to the right emotion.
@@ -135,7 +140,7 @@ public class ASCIIreader {
             if(line.length()>0&&line.charAt(0)!=('#')) {
                 split=line.split("\\s+");
                 if(images.get(imageIndex).equals(split[0]))
-                    images.get(imageIndex).correctEmotion=Integer.parseInt(split[1]);
+                    images.get(imageIndex).setEmotion(Integer.parseInt(split[1]));
                 else {
                     forceChangeEmotion(split[0],Integer.parseInt(split[1]));
                 }
@@ -154,8 +159,8 @@ public class ASCIIreader {
      */
     private void forceChangeEmotion(String name, int value){
         images.forEach(e->{
-            if(e.name.equals(name))
-                e.correctEmotion=value;
+            if(e.getName().equals(name))
+                e.setEmotion(value);
         });
     }
 
@@ -164,6 +169,8 @@ public class ASCIIreader {
      * Splits Images between training & performance.
      */
     private void splitImages(){
+        trainingImages=new ArrayList<>();
+        performanceImages= new ArrayList<>();
         images.forEach(e->{
             if(images.indexOf(e)<(int)(fileRatio*images.size()))
                 trainingImages.add(e);
