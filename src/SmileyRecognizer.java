@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Function;
@@ -7,7 +8,7 @@ public class SmileyRecognizer {
     private ASCIIreader asciiReader;
     private ArrayList<Perceptron> perceptrons;
 
-    public SmileyRecognizer(File imageFile,File answerFile,File testFile){
+    public SmileyRecognizer(File imageFile,File answerFile,File testFile) throws IOException {
         initializeImages(imageFile,answerFile);
         initializeWeights();
     }
@@ -17,7 +18,7 @@ public class SmileyRecognizer {
     public double sumWWeights(int index, Image image){
         double sum = 0;
         for(int i= 0; i<402 ; i++){
-              sum+=perceptrons.get(i).getWeight(index)*image.getImage()[i];
+            sum+=perceptrons.get(i).getWeight(index)*image.getImage()[i];
         }
         return sum;
     }
@@ -26,8 +27,8 @@ public class SmileyRecognizer {
 
     }
 
-    public void initializeImages(File imageFile,File answerFile){
-        asciiReader=new ASCIIreader(imageFile,answerFile);
+    public void initializeImages(File imageFile,File answerFile) throws IOException {
+        asciiReader=new ASCIIreader(imageFile,answerFile, 2.0/3.0);
     }
 
     public void initializeWeights(){
@@ -37,7 +38,7 @@ public class SmileyRecognizer {
 
     }
 
-    public static void main(String args[]){
+    public static void main(String args[]) throws IOException {
 
         SmileyRecognizer smileyRecognizer= new SmileyRecognizer(
                 new File(args[0])
