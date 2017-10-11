@@ -6,12 +6,13 @@ import java.util.function.Function;
 public class SmileyRecognizer {
     private ASCIIreader asciiReader;
     private ArrayList<Perceptron> perceptrons;
-    
+
     public SmileyRecognizer(File imageFile,File answerFile,File testFile){
         initializeImages(imageFile,answerFile);
         initializeWeights();
     }
     public static Function<Double,Double> activationFunction = e->Math.tanh(e);
+
 
     public double sumWWeights(int index, Image image){
         double sum = 0;
