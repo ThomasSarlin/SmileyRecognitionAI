@@ -12,13 +12,6 @@ public class Perceptron {
 
     public double getWeight(int index){return this.weights[index];}
 
-<<<<<<< HEAD
-    double randomValue;
-    double rangeMin=0.3;
-    double rangeMax=0.5;
-    Random random=new Random();
-=======
->>>>>>> master
     private void setRandomWeights(){
         double rangeMin=0.3;
         double rangeMax=0.5;
@@ -31,7 +24,7 @@ public class Perceptron {
 
     public void adjustWeight(int index, double learningValue,double expectedValue,double actualValue){
         try {
-            weights[index] += learningValue*(expectedValue-learningValue);
+            weights[index] += learningValue*(expectedValue-actualValue);
         }catch (IndexOutOfBoundsException e){
             System.err.println("adjustWeight index out of bounds");
         }

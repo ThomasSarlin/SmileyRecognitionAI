@@ -1,8 +1,6 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class SmileyRecognizer {
@@ -12,7 +10,9 @@ public class SmileyRecognizer {
     private double learningValue;
 
     public SmileyRecognizer(File imageFile,File answerFile,File testFile) throws IOException {
-        this.learningValue = 0.05;
+        this.learningValue = 0.001;
+        perceptrons=new ArrayList<>();
+        activationValues= new ArrayList<>();
         initializeImages(imageFile,answerFile);
         initializeWeights();
     }
@@ -22,6 +22,7 @@ public class SmileyRecognizer {
     public double sumWWeights(int index, Image image){
         double sum = 0;
         for(int i= 0; i<402 ; i++){
+            //System.out.println(perceptrons.get(i).getWeight(index) + " " + image.getImage()[i]);
             sum+=perceptrons.get(i).getWeight(index)*image.getImage()[i];
         }
         return sum;
@@ -29,10 +30,28 @@ public class SmileyRecognizer {
 
     public void run(){
         calculateActivationValues();
+        asciiReader.shuffleImages();
+        calculateActivationValues();
+
+        asciiReader.shuffleImages();
+
+        calculateActivationValues();
+
+        asciiReader.shuffleImages();
+        calculateActivationValues();
+
+        asciiReader.shuffleImages();
+        calculateActivationValues();
+        characterizePerformanceImages();
+
+        asciiReader.shuffleImages();
+        calculateActivationValues();
+        characterizePerformanceImages();
+
     }
     private void calculateActivationValues(){
         Image image;
-
+        int correctAnswers=0;
         for (int i = 0; i < asciiReader.getTrainingImages().size(); i++){
             activationValues.add(new Double[4]);
             image = asciiReader.getTrainingImages().get(i);
@@ -41,13 +60,11 @@ public class SmileyRecognizer {
                         sumWWeights(j, image));
             }
             adjustWeights(activationValues.get(i),image);
-            System.out.println("Image " + i + " CorrectValue: " + image.getEmotion()
-                    + " Weighted values: "
-                    + "1: " + activationValues.get(i)[0]
-                    + "2: " + activationValues.get(i)[1]
-                    + "3: " + activationValues.get(i)[2]
-                    + "4: " + activationValues.get(i)[3]);
+            for(int g=0;g<4;g++)
+                if(activationValues.get(i)[g]==1.0 && asciiReader.getTrainingImages().get(i).getEmotion()==(g+1))
+                    correctAnswers++;
         }
+        System.out.println(correctAnswers/200.0);
     }
 
     private void adjustWeights(Double[] activationValues,Image image){
@@ -56,10 +73,43 @@ public class SmileyRecognizer {
                 if((j+1)==image.getEmotion())
                     perceptrons.get(i).adjustWeight(j,learningValue,1,activationValues[j]);
                 else
-                    perceptrons.get(i).adjustWeight(j,learningValue,0,activationValues[j]);
+                    perceptrons.get(i).adjustWeight(j,learningValue,-1,activationValues[j]);
             }
 
         }
+
+    }
+
+    private void characterizePerformanceImages(){
+
+        asciiReader.getPerformanceImages().forEach(e->{
+            double a1;
+            double a2;
+            double a3;
+            double a4;
+            double temp;
+
+            String correct;
+            a1 = sumWWeights(0,e);
+            temp=a1;
+            correct="a1";
+            a2 = sumWWeights(1,e);
+            if(a2>temp) {
+                temp = a2;
+                correct="a2";
+            }
+            a3 = sumWWeights(2,e);
+            if(a3>temp) {
+                temp = a3;
+                correct="a3";
+            }
+            a4 = sumWWeights(3,e);
+            if(a4>temp) {
+                temp = a4;
+                correct="a4";
+            }
+            System.out.println("Correct: " + e.getEmotion() + " Guess: " + correct + " " + temp);
+        });
 
     }
 
@@ -76,10 +126,8 @@ public class SmileyRecognizer {
 
     public static void main(String args[]) throws IOException {
 
-        SmileyRecognizer smileyRecognizer= new SmileyRecognizer(
-                new File(args[0])
-                ,new File(args[1])
-                ,new File(args[2]));
+        SmileyRecognizer smileyRecognizer= new SmileyRecognizer(new File("./pictures/training.txt")
+                ,new File("./pictures/training-facit.txt"),new File("./pictures/training.txt"));
         smileyRecognizer.run();
     }
 
