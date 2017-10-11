@@ -1,28 +1,40 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.function.Function;
+/**
+ * Small class representing an Image file, with name, array of pixels
+ * representing a 20x20 px image (grayscale 0-32 value range) and finally
+ * a corresponding emotion to set image.
+ */
 
 public class Image {
-    int image[];
-    int correctEmotion;
+    private String name;
+    private int image[];
+    private int correctEmotion;
 
-    public Image(int imageArray[], int correctEmotion){
-        this.image=imageArray;
-        this.correctEmotion=correctEmotion;
+    /**
+     * Constructor for Image
+     * @param name set name of image
+     * @param imageArray array representing 20x20px image
+     * @param correctEmotion int in range 1-4 depending on mood of image.
+     */
+    public Image(String name,int imageArray[], int correctEmotion){
+        setName(name);
+        setImage(imageArray);
+        setEmotion(correctEmotion);
     }
-    void setImage(int image[]){
+    public void setName(String name){this.name=name;}
+    public void setImage(int image[]){
         this.image=image;
     }
 
-    void setCorrectEmotion(int correctEmotion){
+    public void setEmotion(int correctEmotion){
         this.correctEmotion=correctEmotion;
     }
 
-    int[] getImage(){
+    public String getName(){return  name;}
+    public int[] getImage(){
         return this.image;
     }
 
-    int getCorrectEmotion() {
+    public int getEmotion() {
         return this.correctEmotion;
     }
 }
