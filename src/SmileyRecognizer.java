@@ -1,3 +1,11 @@
+/**
+ * @auther:
+ * Thomas Sarlin - id15tsn
+ * Petter Poucette - id15ppe
+ *
+ * Responsible for running the neural network.
+ */
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -7,12 +15,19 @@ public class SmileyRecognizer {
     private ASCIIreader testReader;
     private ArrayList<Perceptron> perceptrons;
     private double learningValue;
-    private double errorThreshold;
+    private double errorTreshold;
 
-    private SmileyRecognizer(File imageFile,File answerFile,File testFile)
-            throws IOException {
-
-        this.errorThreshold =0.15;
+    /**
+     * Constructor SmileyRecognizer
+     * @param imageFile File that contains training images (Format: ASCII,
+     *                  Size: 20x20 px)
+     * @param answerFile File that contains answers to imageFile
+     * @param testFile File to that contains images (Format: ASCII,
+     *                 Size: 20x20 px)
+     * @throws IOException
+     */
+    private SmileyRecognizer(File imageFile,File answerFile,File testFile) throws IOException {
+        this.errorTreshold=0.15;
         this.learningValue = 0.05;
         perceptrons=new ArrayList<>();
         initializeImages(imageFile,answerFile);
@@ -20,10 +35,19 @@ public class SmileyRecognizer {
         initializeTestFile(testFile);
 
     }
-    private static Function<Double,Double> activationFunction =
-            x->(1/( 1 + Math.pow(Math.E,(-1*x))));
+
+    /**
+     *Acivation function representing sigmoid(x)
+     */
+    private static Function<Double,Double> activationFunction = x->(1/( 1 + Math.pow(Math.E,(-1*x))));
 
 
+    /**
+     * Summarizes Weights multiplied by grayscale value representing an image
+     * @param index Index representing emotion
+     * @param image
+     * @return Summation of Weights
+     */
     private double sumWeights(int index, Image image){
         double sum = 0;
         for(int i= 0; i<402 ; i++){
@@ -32,23 +56,32 @@ public class SmileyRecognizer {
         }
         return sum;
     }
+
+
+    /**
+     * Take grayscale value between 0 and 32  and normalize
+     * @param value Grayscale value
+     * @return Normalized value
+     */
     private double normalizeImageValue(double value){
         return value/(32);
     }
 
-    private void run() throws FileNotFoundException
-            , UnsupportedEncodingException {
-
+    /**
+     * Runs the neural network
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     */
+    public void run() throws FileNotFoundException, UnsupportedEncodingException {
         double averageError=1;
         int index=0;
-        while(averageError> errorThreshold) {
+        while(averageError> errorTreshold) {
             calculateActivationValues();
             averageError=characterizePerformanceImages(asciiReader
                     .getPerformanceImages());
 
             asciiReader.shuffleImages();
             index++;
-
         }
         
         System.out.println("# Average Error: "+averageError);
@@ -56,6 +89,10 @@ public class SmileyRecognizer {
 
         characterizeTestImages();
     }
+
+    /**
+     * Perceptron training of the neural network
+     */
     private void calculateActivationValues(){
         double activationValues[] = new double[4];
         for(Image image:asciiReader.getPerformanceImages()){
@@ -67,6 +104,11 @@ public class SmileyRecognizer {
         }
     }
 
+    /**
+     * Adjusts the weight thought perseptron traning
+     * @param activationValues Values representing activation function
+     * @param image
+     */
     private void adjustWeights(double activationValues[],Image image){
 
         for(int i=0;i<perceptrons.size();i++){
@@ -85,6 +127,11 @@ public class SmileyRecognizer {
 
     }
 
+    /**
+     * Performance test
+     * @param images
+     * @return Average error
+     */
     private double characterizePerformanceImages(ArrayList<Image> images) {
         double activationResult[]=new double[4];
         double errorSum=0;
@@ -98,8 +145,12 @@ public class SmileyRecognizer {
         return (errorSum/(double)asciiReader.getPerformanceImages().size());
     }
 
-    private void characterizeTestImages()
-            throws FileNotFoundException, UnsupportedEncodingException {
+    /**
+     * Characterizes images from testfile and presents them to System.out
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
+     */
+    private void characterizeTestImages() throws FileNotFoundException, UnsupportedEncodingException {
         PrintWriter writer = new PrintWriter("output.txt", "UTF-8");
         ArrayList<Image> images = testReader.getImages();
         double activationResult[]=new double[4];
@@ -115,6 +166,12 @@ public class SmileyRecognizer {
         }
         writer.close();
     }
+
+    /**
+     * Selects the most likely emotion represented in the image
+     * @param values activation Values
+     * @return Index representing emotion
+     */
     private int getBestGuess(double values[]){
         int maxIndex=0;
         double max=0;
@@ -126,12 +183,21 @@ public class SmileyRecognizer {
         }
         return maxIndex+1;
     }
-    private void initializeImages(File imageFile,File answerFile)
-            throws IOException {
 
+
+    /**
+     * Creates an ASCII class containing an images file and the answers for those file
+     * @param imageFile
+     * @param answerFile
+     * @throws IOException
+     */
+    private void initializeImages(File imageFile,File answerFile) throws IOException {
         asciiReader=new ASCIIreader(imageFile,answerFile, 2.0/3.0);
     }
 
+    /**
+     * Initialize all perceprons
+     */
     private void initializeWeights(){
         for(int i=0 ; i<402 ; i++){
             perceptrons.add(new Perceptron());
@@ -139,9 +205,20 @@ public class SmileyRecognizer {
 
     }
 
+    /**
+     * Creates an ASCII class containing test images
+     * @param testFile
+     * @throws IOException
+     */
     private void initializeTestFile(File testFile) throws IOException {
         testReader = new ASCIIreader(testFile);
     }
+
+    /**
+     *
+     * @param args Traning file, performace file, test file
+     * @throws IOException
+     */
     public static void main(String args[]) throws IOException {
 
         SmileyRecognizer smileyRecognizer
