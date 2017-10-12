@@ -6,15 +6,13 @@ import java.util.function.Function;
 public class SmileyRecognizer {
     private ASCIIreader asciiReader;
     private ArrayList<Perceptron> perceptrons;
-    private ArrayList<Double[]> activationValues;
-    private ArrayList<Double[]> sumValues;
     private double learningValue;
+    private double errorTreshold;
 
     public SmileyRecognizer(File imageFile,File answerFile,File testFile) throws IOException {
+        this.errorTreshold=0.2;
         this.learningValue = 0.05;
         perceptrons=new ArrayList<>();
-        activationValues= new ArrayList<>();
-        sumValues = new ArrayList<>();
         initializeImages(imageFile,answerFile);
         initializeWeights();
     }
@@ -33,65 +31,54 @@ public class SmileyRecognizer {
     }
 
     public void run(){
-        calculateActivationValues();
-        asciiReader.shuffleImages();
-        characterizePerformanceImages(asciiReader.getPerformanceImages());
-
-        calculateActivationValues();
-        asciiReader.shuffleImages();
-        characterizePerformanceImages(asciiReader.getPerformanceImages());
-
-        calculateActivationValues();
-        asciiReader.shuffleImages();
-        characterizePerformanceImages(asciiReader.getPerformanceImages());
-
-        calculateActivationValues();
-        asciiReader.shuffleImages();
-        characterizePerformanceImages(asciiReader.getPerformanceImages());
-
-
+        double averageError=1;
+        while(averageError>errorTreshold) {
+            calculateActivationValues();
+            averageError=characterizePerformanceImages(asciiReader.getPerformanceImages());
+            asciiReader.shuffleImages();
+        }
     }
     private void calculateActivationValues(){
         Image image;
+        double activationValues[] = new double[4];
         for (int i = 0; i < asciiReader.getTrainingImages().size(); i++){
-            activationValues.add(new Double[4]);
-            sumValues.add(new Double[4]);
             image = asciiReader.getTrainingImages().get(i);
-            for (int j = 0 ; j < activationValues.get(i).length; j++){
-                sumValues.get(i)[j] = sumWeights(j,image);
-                activationValues.get(i)[j] = activationFunction.apply(sumValues.get(i)[j]);
+            for (int j = 0 ; j < activationValues.length; j++){
+                activationValues[j] = activationFunction.apply(sumWeights(j,image));
             }
-            adjustWeights(activationValues.get(i),image);
+            adjustWeights(activationValues,image);
         }
     }
 
-    private void adjustWeights(Double[] activationValues,Image image){
+    private void adjustWeights(double activationValues[],Image image){
 
         for(int i=0;i<perceptrons.size();i++){
             for(int j=0;j<4;j++) {
                 if ((j + 1) == image.getEmotion()) {
-                    perceptrons.get(i).adjustWeight(j, learningValue, 1, activationValues[j],image.getImage()[i]);
+                    perceptrons.get(i).adjustWeight(j, learningValue, 1, activationValues[j],normalizeImageValue(image.getImage()[i]));
                 } else {
-                    perceptrons.get(i).adjustWeight(j, learningValue, 0, activationValues[j],image.getImage()[i]);
+                    perceptrons.get(i).adjustWeight(j, learningValue, 0, activationValues[j],normalizeImageValue(image.getImage()[i]));
                 }
             }
         }
 
     }
 
-    private void characterizePerformanceImages(ArrayList<Image> images){
+    private double characterizePerformanceImages(ArrayList<Image> images){
         double activationResult[]=new double[4];
         int correctAnswers=0;
-
+        double errorSum=0;
         for(int i=0;i<images.size();i++){
             for(int j=0;j<4;j++)
                 activationResult[j]=activationFunction.apply(sumWeights(j,images.get(i)));
             if(getBestGuess(activationResult)==images.get(i).getEmotion())
                 correctAnswers++;
-
+            errorSum+=(1-activationResult[getBestGuess(activationResult)-1]);
         }
-
-        System.out.println("# Total percentage: "+(correctAnswers/(double)100));
+        double averageError = (errorSum/(double)asciiReader.getPerformanceImages().size());
+        System.out.println("# Average Error: "+averageError);
+        System.out.println("# Total percentage: "+(correctAnswers/((double)asciiReader.getPerformanceImages().size())));
+        return (averageError);
     }
 
     private int getBestGuess(double values[]){

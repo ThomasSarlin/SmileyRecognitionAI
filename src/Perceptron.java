@@ -22,7 +22,7 @@ public class Perceptron {
         }
     }
 
-    public void adjustWeight(int index, double learningValue,double expectedValue,double actualValue,int nodeValue){
+    public void adjustWeight(int index, double learningValue,double expectedValue,double actualValue,double nodeValue){
         try {
             weights[index] += nodeValue*learningValue*(expectedValue-actualValue);
         }catch (IndexOutOfBoundsException e){
