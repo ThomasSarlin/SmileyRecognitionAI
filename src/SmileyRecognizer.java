@@ -1,9 +1,9 @@
 /**
- * @auther:
- * Thomas Sarlin - id15tsn
- * Petter Poucette - id15ppe
+ * @auth Thomas Sarlin - id15tsn, Petter Poucette - id15ppe
  *
- * Responsible for running the neural network.
+ * Responsible for running and training the neural network
+ * to respond and identify 20x20px images representing the emotions
+ * "happy","sad","mischievous" and "angry".
  */
 
 import java.io.*;
@@ -20,10 +20,11 @@ public class SmileyRecognizer {
     /**
      * Constructor SmileyRecognizer
      * @param imageFile File that contains training images (Format: ASCII,
-     *                  Size: 20x20 px)
+     *                  Image size: 20x20 px)
      * @param answerFile File that contains answers to imageFile
+     *                   (Format: ASCII, "(string)Name (int)CorrectEmotion")
      * @param testFile File to that contains images (Format: ASCII,
-     *                 Size: 20x20 px)
+     *                 Image size: 20x20 px)
      * @throws IOException
      */
     private SmileyRecognizer(File imageFile,File answerFile,File testFile) throws IOException {
@@ -43,7 +44,7 @@ public class SmileyRecognizer {
 
 
     /**
-     * Summarizes Weights multiplied by grayscale value representing an image
+     * Summarizes Weights multiplied by gray scale value representing an image
      * @param index Index representing emotion
      * @param image
      * @return Summation of Weights
@@ -59,8 +60,8 @@ public class SmileyRecognizer {
 
 
     /**
-     * Take grayscale value between 0 and 32  and normalize
-     * @param value Grayscale value
+     * Take gray scale value between 0 and 32  and normalize
+     * @param value Gray scale value
      * @return Normalized value
      */
     private double normalizeImageValue(double value){
@@ -105,7 +106,7 @@ public class SmileyRecognizer {
     }
 
     /**
-     * Adjusts the weight thought perseptron traning
+     * Adjusts the weight thought perceptron traning
      * @param activationValues Values representing activation function
      * @param image
      */
@@ -146,12 +147,13 @@ public class SmileyRecognizer {
     }
 
     /**
-     * Characterizes images from testfile and presents them to System.out
+     * Characterizes images from test file and presents them to System.out
+     * if format "(string)Name (int)Correct Emotion".
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
     private void characterizeTestImages() throws FileNotFoundException, UnsupportedEncodingException {
-        PrintWriter writer = new PrintWriter("output.txt", "UTF-8");
+        PrintWriter writer = new PrintWriter("./pictures/output.txt", "UTF-8");
         ArrayList<Image> images = testReader.getImages();
         double activationResult[]=new double[4];
         int bestGuess;
@@ -215,12 +217,10 @@ public class SmileyRecognizer {
     }
 
     /**
-     *
-     * @param args Traning file, performace file, test file
+     * @param args Training file, performance file, test file
      * @throws IOException
      */
     public static void main(String args[]) throws IOException {
-
         SmileyRecognizer smileyRecognizer
                 = new SmileyRecognizer(new File(args[0])
                 ,new File(args[1])
