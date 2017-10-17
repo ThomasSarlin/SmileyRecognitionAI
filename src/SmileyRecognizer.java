@@ -28,7 +28,7 @@ public class SmileyRecognizer {
      * @throws IOException
      */
     private SmileyRecognizer(File imageFile,File answerFile,File testFile) throws IOException {
-        this.errorTreshold=0.15;
+        this.errorTreshold=0.05;
         this.learningValue = 0.05;
         perceptrons=new ArrayList<>();
         initializeImages(imageFile,answerFile);
@@ -51,7 +51,7 @@ public class SmileyRecognizer {
      */
     private double sumWeights(int index, Image image){
         double sum = 0;
-        for(int i= 0; i<402 ; i++){
+        for(int i= 0; i<400 ; i++){
             sum+=perceptrons.get(i).getWeight(index)
                     *normalizeImageValue(image.getImage()[i]);
         }
@@ -60,12 +60,12 @@ public class SmileyRecognizer {
 
 
     /**
-     * Take gray scale value between 0 and 32  and normalize
+     * Take gray scale value between 0 and 31  and normalize
      * @param value Gray scale value
      * @return Normalized value
      */
     private double normalizeImageValue(double value){
-        return value/(32);
+        return value/(31);
     }
 
     /**
@@ -76,7 +76,7 @@ public class SmileyRecognizer {
     public void run() throws FileNotFoundException, UnsupportedEncodingException {
         double averageError=1;
         int index=0;
-        while(averageError> errorTreshold) {
+        while(averageError> errorTreshold ||index<7) {
             calculateActivationValues();
             averageError=characterizePerformanceImages(asciiReader
                     .getPerformanceImages());
@@ -153,7 +153,9 @@ public class SmileyRecognizer {
      * @throws UnsupportedEncodingException
      */
     private void characterizeTestImages() throws FileNotFoundException, UnsupportedEncodingException {
-        PrintWriter writer = new PrintWriter("./pictures/output.txt", "UTF-8");
+        PrintWriter writer = new PrintWriter("./pictures/result.txt", "UTF-8");
+        writer.println("#Authors: Thomas Sarlin & Petter Poucette");
+
         ArrayList<Image> images = testReader.getImages();
         double activationResult[]=new double[4];
         int bestGuess;
@@ -164,7 +166,6 @@ public class SmileyRecognizer {
 
             bestGuess = getBestGuess(activationResult);
             writer.println(image.getName() + " " + bestGuess);
-            System.out.println(image.getName() + " " + bestGuess);
         }
         writer.close();
     }
@@ -201,7 +202,7 @@ public class SmileyRecognizer {
      * Initialize all perceprons
      */
     private void initializeWeights(){
-        for(int i=0 ; i<402 ; i++){
+        for(int i=0 ; i<400 ; i++){
             perceptrons.add(new Perceptron());
         }
 

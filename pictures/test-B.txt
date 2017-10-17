@@ -3,6 +3,7 @@
 # Correct classifications can be found in training-facit.txt
 # http://www8.cs.umu.se/kurser/5DV121/HT12/
 
+
 Image201
 0 3 7 0 31 31 2 0 7 0 0 4 2 0 1 0 0 5 0 4
 0 7 0 0 21 31 31 7 8 0 2 12 3 3 0 0 5 3 5 0
@@ -24,6 +25,8 @@ Image201
 0 4 5 3 0 5 7 2 0 9 3 11 7 6 0 6 9 0 0 5
 0 0 6 0 0 0 14 0 12 0 0 3 0 5 0 0 0 1 2 3
 0 0 0 0 6 6 0 0 0 0 14 1 0 0 8 3 0 7 0 9
+
+
 
 Image202
 6 9 0 2 8 0 8 2 7 0 7 0 0 0 0 0 0 3 0 1

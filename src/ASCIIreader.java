@@ -10,12 +10,16 @@
  */
 
 
+import com.sun.deploy.util.ArrayUtil;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
+
 public class ASCIIreader {
     private ArrayList<Image> images;
+    private ArrayList<Image> reversedImages;
     private ArrayList<Image> trainingImages;
     private ArrayList<Image> performanceImages;
     private double fileRatio;
@@ -33,6 +37,7 @@ public class ASCIIreader {
         this.images=new ArrayList<>();
         this.trainingImages=new ArrayList<>();
         this.performanceImages = new ArrayList<>();
+        this.reversedImages = new ArrayList<>();
         asciiToImage(ImageFile,answerFile);
     }
 
@@ -82,7 +87,6 @@ public class ASCIIreader {
 
         addImages(imageReader);
         addEmotions(answerReader);
-
         splitImages();
     }
 
@@ -99,7 +103,7 @@ public class ASCIIreader {
         String split[];
         while(line!=null) {
             if(line.length()>0&&(line.charAt(0)!=('#'))){
-                imageArray = new int[402];
+                imageArray = new int[400];
                 split=line.split("\\s+");
                 imageIndex=0;
                 name=split[0];
@@ -113,8 +117,8 @@ public class ASCIIreader {
                     }
                     line=imageReader.readLine();
                     split=line.split("\\s+");
-                    if(split.length<20)
-                        images.add(new Image(name,imageArray,0));
+                    if(split.length<20) {
+                        images.add(new Image(name, imageArray, 0));                  }
 
                 }
             }
@@ -122,7 +126,6 @@ public class ASCIIreader {
         }
 
     }
-
     /**
      * Adds emotions to Array-list from ascii format
      * @param answerReader
@@ -138,10 +141,13 @@ public class ASCIIreader {
         while(line!=null){
             if(line.length()>0&&line.charAt(0)!=('#')) {
                 split=line.split("\\s+");
-                if(images.get(imageIndex).equals(split[0]))
+                if(images.get(imageIndex).equals(split[0])) {
                     images.get(imageIndex).setEmotion(Integer.parseInt(split[1]));
+                    reversedImages.get(imageIndex).setEmotion(Integer.parseInt(split[1]));
+                }
                 else {
-                    forceChangeEmotion(split[0],Integer.parseInt(split[1]));
+                    forceChangeEmotion(images,split[0],Integer.parseInt(split[1]));
+                    forceChangeEmotion(reversedImages,split[0],Integer.parseInt(split[1]));
                 }
                 imageIndex++;
             }
@@ -156,8 +162,8 @@ public class ASCIIreader {
      * @param name - name of image
      * @param value - emotional value to be set.
      */
-    private void forceChangeEmotion(String name, int value){
-        images.forEach(e->{
+    private void forceChangeEmotion(ArrayList<Image> image,String name, int value){
+        image.forEach(e->{
             if(e.getName().equals(name))
                 e.setEmotion(value);
         });
