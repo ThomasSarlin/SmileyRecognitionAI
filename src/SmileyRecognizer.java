@@ -78,7 +78,7 @@ public class SmileyRecognizer {
         int index=0;
         while(averageError> errorTreshold ||index<7) {
             calculateActivationValues();
-            averageError=characterizePerformanceImages(asciiReader
+            averageError= classifyPerformanceImages(asciiReader
                     .getPerformanceImages());
 
             asciiReader.shuffleImages();
@@ -88,7 +88,7 @@ public class SmileyRecognizer {
         System.out.println("# Average Error: "+averageError);
         System.out.println("# Number of calibration rounds: "+index);
 
-        characterizeTestImages();
+        classifyTestImages();
     }
 
     /**
@@ -96,7 +96,7 @@ public class SmileyRecognizer {
      */
     private void calculateActivationValues(){
         double activationValues[] = new double[4];
-        for(Image image:asciiReader.getPerformanceImages()){
+        for(Image image:asciiReader.getTrainingImages()){
             for (int j = 0 ; j < activationValues.length; j++){
                 activationValues[j] = activationFunction
                         .apply(sumWeights(j,image));
@@ -133,7 +133,7 @@ public class SmileyRecognizer {
      * @param images
      * @return Average error
      */
-    private double characterizePerformanceImages(ArrayList<Image> images) {
+    private double classifyPerformanceImages(ArrayList<Image> images) {
         double activationResult[]=new double[4];
         double errorSum=0;
         for (Image image : images) {
@@ -152,7 +152,7 @@ public class SmileyRecognizer {
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
-    private void characterizeTestImages() throws FileNotFoundException, UnsupportedEncodingException {
+    private void classifyTestImages() throws FileNotFoundException, UnsupportedEncodingException {
         PrintWriter writer = new PrintWriter("./pictures/result.txt", "UTF-8");
         writer.println("#Authors: Thomas Sarlin & Petter Poucette");
 

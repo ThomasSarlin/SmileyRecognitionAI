@@ -1,7 +1,7 @@
 #Authors: Thomas Sarlin & Petter Poucette
 Image201 2
 Image202 1
-Image203 1
+Image203 2
 Image204 4
 Image205 1
 Image206 2
@@ -15,7 +15,7 @@ Image213 4
 Image214 3
 Image215 1
 Image216 4
-Image217 2
+Image217 3
 Image218 3
 Image219 1
 Image220 1
@@ -32,9 +32,9 @@ Image230 1
 Image231 4
 Image232 1
 Image233 1
-Image234 1
+Image234 2
 Image235 2
-Image236 4
+Image236 3
 Image237 2
 Image238 1
 Image239 1
@@ -42,13 +42,13 @@ Image240 4
 Image241 1
 Image242 2
 Image243 3
-Image244 1
+Image244 2
 Image245 1
 Image246 4
 Image247 1
 Image248 3
 Image249 1
-Image250 1
+Image250 3
 Image251 4
 Image252 1
 Image253 1
