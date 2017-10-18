@@ -77,7 +77,8 @@ public class SmileyRecognizer {
         double averageError=1;
         int index=0;
         while(averageError> errorTreshold ||index<7) {
-            calculateActivationValues();
+            trainPerceptrons();
+
             averageError= classifyPerformanceImages(asciiReader
                     .getPerformanceImages());
 
@@ -94,7 +95,7 @@ public class SmileyRecognizer {
     /**
      * Perceptron training of the neural network
      */
-    private void calculateActivationValues(){
+    private void trainPerceptrons(){
         double activationValues[] = new double[4];
         for(Image image:asciiReader.getTrainingImages()){
             for (int j = 0 ; j < activationValues.length; j++){
