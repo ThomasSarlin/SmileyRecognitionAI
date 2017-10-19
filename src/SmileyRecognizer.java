@@ -27,7 +27,7 @@ public class SmileyRecognizer {
      *                 Image size: 20x20 px)
      * @throws IOException
      */
-    private SmileyRecognizer(File imageFile,File answerFile,File testFile) throws IOException {
+    SmileyRecognizer(File imageFile, File answerFile, File testFile) throws IOException {
         this.errorTreshold=0.05;
         this.learningValue = 0.05;
         perceptrons=new ArrayList<>();
@@ -154,7 +154,7 @@ public class SmileyRecognizer {
      * @throws UnsupportedEncodingException
      */
     private void classifyTestImages() throws FileNotFoundException, UnsupportedEncodingException {
-        PrintWriter writer = new PrintWriter("./pictures/result.txt", "UTF-8");
+        PrintWriter writer = new PrintWriter("result.txt", "UTF-8");
         writer.println("#Authors: Thomas Sarlin & Petter Poucette");
 
         ArrayList<Image> images = testReader.getImages();
@@ -216,18 +216,6 @@ public class SmileyRecognizer {
      */
     private void initializeTestFile(File testFile) throws IOException {
         testReader = new ASCIIreader(testFile);
-    }
-
-    /**
-     * @param args Training file, performance file, test file
-     * @throws IOException
-     */
-    public static void main(String args[]) throws IOException {
-        SmileyRecognizer smileyRecognizer
-                = new SmileyRecognizer(new File(args[0])
-                ,new File(args[1])
-                ,new File(args[2]));
-        smileyRecognizer.run();
     }
 
 }

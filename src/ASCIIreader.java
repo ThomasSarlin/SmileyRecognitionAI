@@ -9,9 +9,6 @@
  * @author Thomas Sarlin, Petter Poucette
  */
 
-
-import com.sun.deploy.util.ArrayUtil;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
